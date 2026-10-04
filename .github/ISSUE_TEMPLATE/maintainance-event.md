@@ -8,14 +8,16 @@ assignees: ''
 ---
 
 <!--
-Open this issue at least 48 hours before a class B window (Plan/lunchdayfinal.md
-§12.3a) and send the customer email from Plan/ops/SZABLON_okno-serwisowe.md.
+Class B window (Plan/lunchdayfinal.md §12.3a): Tue–Thu 03:00–05:00 UK time,
+this issue and the in-app banner at least 48 hours before; email paying
+customers only if the break may exceed 15 minutes
+(Plan/ops/SZABLON_okno-serwisowe.md).
 Times are UTC (ISO 8601); UK time is UTC+1 in summer, UTC+0 in winter.
 expectedDown takes site slugs from history/*.yml: Upptime will not open an
 outage incident for these sites during the window.
 
-start: 2026-10-24T22:00:00Z
-end: 2026-10-24T22:30:00Z
+start: 2026-10-27T03:00:00Z
+end: 2026-10-27T03:30:00Z
 expectedDown: postra-app-api-health
 -->
 
