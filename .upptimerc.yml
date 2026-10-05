@@ -1,13 +1,17 @@
 # Upptime config — Postra status page (observability.md Tier 0.6)
 #
-# Upptime dziala W CALOSCI na GitHub: Actions (probe co 5 min, free) + Issues
-# (auto-incydenty) + Pages (strona statusu). NIE wymaga zadnej infry AWS.
+# Upptime dziala W CALOSCI na GitHub: Actions (cron "*/5", ale GitHub odpala go
+# co kilka godzin: 4 przebiegi "Uptime CI" z crona w 24 h, 2026-10-05; free)
+# + Issues (auto-incydenty) + Pages (strona statusu). NIE wymaga zadnej infry AWS.
 #
 # Setup (patrz README.md obok):
-#   1. Stworz PUBLICZNE repo KrisRz/postra-status z szablonu github.com/upptime/upptime
+#   1. Stworz PUBLICZNE repo Postra-app/postra-status z szablonu github.com/upptime/upptime
 #   2. Wrzuc ten plik do roota tego repo
-#   3. Dodaj secret GH_PAT (classic PAT: repo + workflow)
-#   4. Wlacz Pages + ustaw DNS status.postra.pl -> KrisRz.github.io
+#   3. Token: GitHub App (variable GH_APP_ID + secret GH_APP_PRIVATE_KEY),
+#      fallback secret GH_PAT (classic PAT: repo + workflow) — przejscie na App
+#      w toku (e2e/bugs.md E2E-11-05)
+#   4. Wlacz Pages + ustaw DNS status.postra.pl -> postra-app.github.io
+#      (terraform/envs/dev/main.tf, aws_route53_record.status)
 
 owner: Postra-app
 repo: postra-status
@@ -44,5 +48,6 @@ status-website:
 assignees:
   - KrisRz
 
-# Probe domyslnie co 5 min. Powiadomienia: domyslnie GitHub Issues.
+# Probe: cron Upptime "*/5 * * * *", w praktyce co kilka godzin (GitHub opoznia
+# i pomija scheduled runs). Powiadomienia: domyslnie GitHub Issues.
 # Opcjonalnie Telegram/Slack/email — sekcja `notifications:` (patrz Upptime docs).
