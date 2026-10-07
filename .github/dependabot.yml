@@ -1,0 +1,12 @@
+# Every action here is pinned (third-party ones to a commit), and the Upptime
+# template no longer rewrites the workflows, so this is what keeps them
+# current: one pull request a week with whatever moved.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions:
+        patterns: ["*"]
