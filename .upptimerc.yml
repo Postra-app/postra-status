@@ -7,9 +7,10 @@
 # Setup (patrz README.md obok):
 #   1. Stworz PUBLICZNE repo Postra-app/postra-status z szablonu github.com/upptime/upptime
 #   2. Wrzuc ten plik do roota tego repo
-#   3. Token: GitHub App (variable GH_APP_ID + secret GH_APP_PRIVATE_KEY),
-#      fallback secret GH_PAT (classic PAT: repo + workflow) — przejscie na App
-#      w toku (e2e/bugs.md E2E-11-05)
+#   3. Token: GitHub App (variable GH_APP_ID + secret GH_APP_PRIVATE_KEY);
+#      secret GH_PAT usuniety 2026-10-06 (e2e/bugs.md E2E-11-05)
+#   Workflowy sa przypiete recznie, aktualizacje szablonu Upptime wylaczone
+#   (2026-10-07): nowe wersje akcji proponuje Dependabot (.github/dependabot.yml)
 #   4. Wlacz Pages + ustaw DNS status.postra.pl -> postra-app.github.io
 #      (terraform/envs/dev/main.tf, aws_route53_record.status)
 
@@ -51,3 +52,7 @@ assignees:
 # Probe: cron Upptime "*/5 * * * *", w praktyce co kilka godzin (GitHub opoznia
 # i pomija scheduled runs). Powiadomienia: domyslnie GitHub Issues.
 # Opcjonalnie Telegram/Slack/email — sekcja `notifications:` (patrz Upptime docs).
+
+# Workflows are pinned by hand (template updates are off); this keeps the
+# runner image and every action current.
+runner: ubuntu-26.04
