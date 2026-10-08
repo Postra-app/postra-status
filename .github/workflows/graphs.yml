@@ -50,9 +50,32 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: "24"
+      # @upptime/graphs draws with canvas 2, which ships prebuilt binaries only
+      # up to Node 20. On Node 22+ npm builds it from source and needs Cairo.
+      - name: Install Cairo for canvas
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends \
+            libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+      - name: Record the commit before graphs
+        id: before
+        shell: bash
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Generate graphs
         uses: upptime/uptime-monitor@8be193bbcb957a3a917d2bb16a0c96959778a889 # v1.44.1
         with:
           command: "graphs"
         env:
           GH_PAT: ${{ steps.app_token.outputs.token || secrets.GH_PAT || github.token }}
+      # The action ignores the exit code of "npx @upptime/graphs", so a failed
+      # install still ends green with nothing drawn. No new commit = failure.
+      - name: Check that new graphs were committed
+        shell: bash
+        env:
+          BEFORE: ${{ steps.before.outputs.sha }}
+        run: |
+          if [ "$(git rev-parse HEAD)" = "$BEFORE" ]; then
+            echo "::error::No graphs commit: @upptime/graphs drew nothing (see its output above)."
+            exit 1
+          fi
