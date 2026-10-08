@@ -60,10 +60,9 @@ jobs:
           cp .github/graphs/package.json .github/graphs/package-lock.json .
           printf '/node_modules/\n/package.json\n/package-lock.json\n' >> .git/info/exclude
           npm ci --no-audit --no-fund
-      - name: Record the commit before graphs
-        id: before
+      - name: Mark the start of graph generation
         shell: bash
-        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+        run: touch "$RUNNER_TEMP/graphs-start"
       - name: Generate graphs
         uses: upptime/uptime-monitor@8be193bbcb957a3a917d2bb16a0c96959778a889 # v1.44.1
         with:
@@ -71,14 +70,20 @@ jobs:
         env:
           GH_PAT: ${{ steps.app_token.outputs.token || secrets.GH_PAT || github.token }}
       # The action ignores the exit code of "npx @upptime/graphs", so a failed
-      # install still ends green with nothing drawn. No new commit = failure.
-      - name: Check that new graphs were committed
+      # install still ends green with nothing drawn. The generator rewrites
+      # api/<site>/uptime.json for every site before it draws (imagemin, which
+      # runs even when it failed, touches only graphs/). Identical graphs with
+      # no new measurements are fine: no commit is needed then.
+      - name: Check that the graphs were drawn and committed
         shell: bash
-        env:
-          BEFORE: ${{ steps.before.outputs.sha }}
         run: |
-          if [ "$(git rev-parse HEAD)" = "$BEFORE" ]; then
-            echo "::error::No graphs commit: @upptime/graphs drew nothing (see its output above)."
+          stale=$(find api -name uptime.json ! -newer "$RUNNER_TEMP/graphs-start")
+          if [ -n "$stale" ]; then
+            echo "::error::@upptime/graphs did not run for: $stale (see its output above)."
+            exit 1
+          fi
+          if [ -n "$(git status --porcelain -- graphs api)" ]; then
+            echo "::error::Graphs were drawn but not committed."
             exit 1
           fi
           # A broken canvas draws the area black instead of #89e0cf; the
