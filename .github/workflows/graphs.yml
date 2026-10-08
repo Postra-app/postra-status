@@ -50,14 +50,16 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: "24"
-      # @upptime/graphs draws with canvas 2, which ships prebuilt binaries only
-      # up to Node 20. On Node 22+ npm builds it from source and needs Cairo.
-      - name: Install Cairo for canvas
+      # The action runs "npx @upptime/graphs", which would fetch canvas 2: no
+      # binaries past Node 20, and built from source on Node 22+ it draws every
+      # graph black. Install our pinned copy (canvas 3) here so npx uses it,
+      # and keep it out of the commit the action makes with "git add .".
+      - name: Install the graph generator
         shell: bash
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq --no-install-recommends \
-            libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+          cp .github/graphs/package.json .github/graphs/package-lock.json .
+          printf '/node_modules/\n/package.json\n/package-lock.json\n' >> .git/info/exclude
+          npm ci --no-audit --no-fund
       - name: Record the commit before graphs
         id: before
         shell: bash
@@ -79,3 +81,23 @@ jobs:
             echo "::error::No graphs commit: @upptime/graphs drew nothing (see its output above)."
             exit 1
           fi
+          # A broken canvas draws the area black instead of #89e0cf; the
+          # bottom row of a response-time graph is always inside the area.
+          node -e '
+            const { loadImage, createCanvas } = require("canvas");
+            const fs = require("fs");
+            (async () => {
+              for (const slug of fs.readdirSync("graphs")) {
+                const file = `graphs/${slug}/response-time-week.png`;
+                if (!fs.existsSync(file)) continue;
+                const img = await loadImage(file);
+                const ctx = createCanvas(img.width, img.height).getContext("2d");
+                ctx.drawImage(img, 0, 0);
+                const [r, g, b] = ctx.getImageData(img.width / 2, img.height - 2, 1, 1).data;
+                if (r + g + b < 150) {
+                  console.log(`::error::${file} is drawn in black (rgb ${r},${g},${b}).`);
+                  process.exitCode = 1;
+                }
+              }
+            })();
+          '

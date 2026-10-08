@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "description": "The graph generator Upptime runs with npx, installed by Graphs CI before the action so npx uses this copy. canvas 3 instead of the canvas 2 that @upptime/graphs asks for: canvas 2 has no binaries past Node 20, and when built from source on Node 22+ every graph comes out black.",
+  "dependencies": {
+    "@upptime/graphs": "1.2.31"
+  },
+  "overrides": {
+    "canvas": "3.2.3"
+  }
+}
