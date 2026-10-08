@@ -50,9 +50,68 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: "24"
+      # The action runs "npx @upptime/graphs", which would fetch canvas 2: no
+      # binaries past Node 20, and built from source on Node 22+ it draws every
+      # graph black. Install our pinned copy (canvas 3) here so npx uses it,
+      # and keep it out of the commit the action makes with "git add .".
+      - name: Install the graph generator
+        shell: bash
+        run: |
+          cp .github/graphs/package.json .github/graphs/package-lock.json .
+          printf '/node_modules/\n/package.json\n/package-lock.json\n' >> .git/info/exclude
+          npm ci --no-audit --no-fund
+      - name: Mark the start of graph generation
+        shell: bash
+        run: touch "$RUNNER_TEMP/graphs-start"
       - name: Generate graphs
         uses: upptime/uptime-monitor@8be193bbcb957a3a917d2bb16a0c96959778a889 # v1.44.1
         with:
           command: "graphs"
         env:
           GH_PAT: ${{ steps.app_token.outputs.token || secrets.GH_PAT || github.token }}
+      # The action ignores the exit code of "npx @upptime/graphs", so a failed
+      # install or a failed history read still ends green. Every site in
+      # .upptimerc.yml must get its five graphs redrawn in this run (imagemin,
+      # which runs even when the generator failed, writes only flat copies in
+      # graphs/ that the action deletes). Identical graphs with no new
+      # measurements need no commit.
+      - name: Check that the graphs were drawn and committed
+        shell: bash
+        run: |
+          if [ -n "$(git status --porcelain -- graphs api)" ]; then
+            echo "::error::Graphs were drawn but not committed."
+            exit 1
+          fi
+          node -e '
+            const fs = require("fs");
+            const { load } = require("js-yaml");
+            const { getSiteSlug } = require("@upptime/graphs");
+            const { loadImage, createCanvas } = require("canvas");
+            const start = fs.statSync(`${process.env.RUNNER_TEMP}/graphs-start`).mtimeMs;
+            const { sites } = load(fs.readFileSync(".upptimerc.yml", "utf8"));
+            (async () => {
+              for (const site of sites) {
+                const slug = getSiteSlug(site);
+                for (const name of ["", "-day", "-week", "-month", "-year"]) {
+                  const file = `graphs/${slug}/response-time${name}.png`;
+                  if (!fs.existsSync(file) || fs.statSync(file).mtimeMs <= start) {
+                    console.log(`::error::${file} was not redrawn in this run (see the generator output above).`);
+                    process.exitCode = 1;
+                  }
+                }
+                // A broken canvas fills the area opaque black instead of
+                // #89e0cf; the bottom row is inside the area (or transparent
+                // when the site has no measurements in the week).
+                const file = `graphs/${slug}/response-time-week.png`;
+                if (!fs.existsSync(file)) continue;
+                const img = await loadImage(file);
+                const ctx = createCanvas(img.width, img.height).getContext("2d");
+                ctx.drawImage(img, 0, 0);
+                const [r, g, b, a] = ctx.getImageData(img.width / 2, img.height - 2, 1, 1).data;
+                if (a === 255 && r + g + b < 150) {
+                  console.log(`::error::${file} is drawn in black (rgb ${r},${g},${b}).`);
+                  process.exitCode = 1;
+                }
+              }
+            })();
+          '

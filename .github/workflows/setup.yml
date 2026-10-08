@@ -73,6 +73,14 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: "24"
+      # Same pinned generator as Graphs CI (see graphs.yml).
+      - name: Install the graph generator
+        if: steps.dispatch_graphs.outcome == 'failure'
+        shell: bash
+        run: |
+          cp .github/graphs/package.json .github/graphs/package-lock.json .
+          printf '/node_modules/\n/package.json\n/package-lock.json\n' >> .git/info/exclude
+          npm ci --no-audit --no-fund
       - name: Generate graphs directly if dispatch fails
         if: steps.dispatch_graphs.outcome == 'failure'
         uses: upptime/uptime-monitor@8be193bbcb957a3a917d2bb16a0c96959778a889 # v1.44.1
