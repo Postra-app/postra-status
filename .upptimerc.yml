@@ -20,17 +20,15 @@ repo: postra-status
 sites:
   - name: Postra App (API health)
     url: https://app.postra.pl/api/monitor/queue/main
-    # backend liveness — zwraca 200. UWAGA: potwierdz ze endpoint jest publiczny
-    # (bez auth) — jesli zwraca 401/403, uzyj https://app.postra.pl/ jako fallback.
+    # Public, no auth: 200 only when the backend reaches the database and Redis
+    # (checked 2026-10-10: {"checks":{"database":"ok","redis":"ok"}}).
   - name: Postra Landing
     url: https://postra.pl
   - name: Postra CDN
-    # CloudFront cdn-dev.postra.pl; root has no default object, so the edge
-    # answers 403 when healthy — both codes mean "CDN up".
-    url: https://cdn-dev.postra.pl
-    expectedStatusCodes:
-      - 200
-      - 403
+    # A small file in the media bucket (status/canary.txt): 200 means the CDN
+    # serves media. The root answered 403 when healthy, and also when the
+    # bucket or its access broke, so the probe could never fail (STA-4).
+    url: https://cdn-dev.postra.pl/status/canary.txt
   - name: Postra UK Landing
     url: https://postra.co.uk
 

@@ -1,7 +1,7 @@
-url: https://cdn-dev.postra.pl
+url: https://cdn-dev.postra.pl/status/canary.txt
 status: up
-code: 403
-responseTime: 524
-lastUpdated: 2026-10-10T02:01:44.211Z
+code: 200
+responseTime: 512
+lastUpdated: 2026-10-10T09:33:20.959Z
 startTime: 2026-05-30T19:11:29.579Z
 generator: Upptime <https://github.com/upptime/upptime>
