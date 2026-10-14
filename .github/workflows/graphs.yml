@@ -64,7 +64,7 @@ jobs:
         shell: bash
         run: touch "$RUNNER_TEMP/graphs-start"
       - name: Generate graphs
-        uses: upptime/uptime-monitor@8be193bbcb957a3a917d2bb16a0c96959778a889 # v1.44.1
+        uses: upptime/uptime-monitor@e2f6bb2b40bd1e2d7356c0768576c7d0dc44fe64 # v1.45.1
         with:
           command: "graphs"
         env:
