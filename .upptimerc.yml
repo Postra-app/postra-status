@@ -19,9 +19,11 @@ repo: postra-status
 
 sites:
   - name: Postra App (API health)
-    url: https://app.postra.pl/api/monitor/queue/main
+    url: https://app.postra.co.uk/api/monitor/queue/main
     # Public, no auth: 200 only when the backend reaches the database and Redis
-    # (checked 2026-10-10: {"checks":{"database":"ok","redis":"ok"}}).
+    # (checked 2026-10-16 on app.postra.co.uk: {"checks":{"database":"ok","redis":"ok"}}).
+    # The app moved to app.postra.co.uk on 2026-10-15; app.postra.pl/api still
+    # answers, but that is the old address. History follows the name, not the URL.
   - name: Postra Landing
     url: https://postra.pl
   - name: Postra CDN
@@ -36,7 +38,7 @@ status-website:
   cname: status.postra.pl
   name: Postra Status
   introTitle: "Postra — service status"
-  introMessage: "Current availability of app.postra.pl and related services."
+  introMessage: "Current availability of app.postra.co.uk and related services."
   # Single-item navbar: the GitHub tab rendered blank where this page is
   # mostly seen (embedded in the admin Dashboards iframe) because github.com
   # refuses framing via X-Frame-Options.
