@@ -24,7 +24,7 @@ expectedDown: postra-app-api-health
 We are upgrading the server that runs Postra.
 
 **When:** <day, date>, <start>–<end> UK time.
-**What you will notice:** app.postra.pl may be unavailable for up to <n> minutes.
+**What you will notice:** app.postra.co.uk may be unavailable for up to <n> minutes.
 **Your scheduled posts:** posts due during the window are published right after it ends. Nothing needs to be done on your side.
 
 We will close this notice when the work is finished.
