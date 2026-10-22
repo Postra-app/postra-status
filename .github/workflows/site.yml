@@ -16,6 +16,9 @@
 name: Static Site CI
 on:
   push:
+    # Only master publishes: a push of these files on a work branch
+    # rebuilt the live status page (Codex audit 2026-10-05, STA-1).
+    branches: [master]
     paths:
       - "assets/**"
   schedule:
