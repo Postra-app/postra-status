@@ -1,10 +1,11 @@
 {
   "private": true,
-  "description": "The graph generator Upptime runs with npx, installed by Graphs CI before the action so npx uses this copy. canvas 3 instead of the canvas 2 that @upptime/graphs asks for: canvas 2 has no binaries past Node 20, and when built from source on Node 22+ every graph comes out black.",
+  "description": "The graph generator Upptime runs with npx, installed by Graphs CI before the action so npx uses this copy. canvas 3 instead of the canvas 2 that @upptime/graphs asks for: canvas 2 has no binaries past Node 20, and when built from source on Node 22+ every graph comes out black. @octokit/rest 20 (the last CommonJS line, same Octokit and repos.listCommits) instead of 18: 18 pulls @octokit/request, request-error and plugin-paginate-rest versions with ReDoS advisories.",
   "dependencies": {
-    "@upptime/graphs": "1.2.31"
+    "@upptime/graphs": "1.2.33"
   },
   "overrides": {
-    "canvas": "3.2.3"
+    "canvas": "3.2.3",
+    "@octokit/rest": "20.1.2"
   }
 }
