@@ -1,6 +1,6 @@
 ---
 name: Maintenance Event
-about: Schedule a maintenance window on status.postra.pl
+about: Schedule a maintenance window on status.postra.co.uk
 title: "[Scheduled maintenance] <what> — <date>, <start>–<end> UK time"
 labels: maintenance
 assignees: ''
