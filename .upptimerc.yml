@@ -11,7 +11,8 @@
 #      secret GH_PAT usuniety 2026-10-06 (e2e/bugs.md E2E-11-05)
 #   Workflowy sa przypiete recznie, aktualizacje szablonu Upptime wylaczone
 #   (2026-10-07): nowe wersje akcji proponuje Dependabot (.github/dependabot.yml)
-#   4. Wlacz Pages + ustaw DNS status.postra.pl -> postra-app.github.io
+#   4. Wlacz Pages + ustaw DNS status.postra.co.uk -> postra-app.github.io
+#      (do 2026-10-27 status.postra.pl; launch w UK, klient nie widzi .pl)
 #      (terraform/envs/dev/main.tf, aws_route53_record.status)
 
 owner: Postra-app
@@ -35,9 +36,9 @@ sites:
     url: https://postra.co.uk
 
 status-website:
-  cname: status.postra.pl
+  cname: status.postra.co.uk
   name: Postra Status
-  introTitle: "Postra — service status"
+  introTitle: "Postra service status"
   introMessage: "Current availability of app.postra.co.uk and related services."
   # Single-item navbar: the GitHub tab rendered blank where this page is
   # mostly seen (embedded in the admin Dashboards iframe) because github.com
