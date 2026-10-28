@@ -31,7 +31,9 @@ sites:
     # A small file in the media bucket (status/canary.txt): 200 means the CDN
     # serves media. The root answered 403 when healthy, and also when the
     # bucket or its access broke, so the probe could never fail (STA-4).
-    url: https://cdn-dev.postra.pl/status/canary.txt
+    # Same file under the CDN's .co.uk name since 2026-10-27 (both names serve
+    # the one distribution); the status page shows customers .co.uk only.
+    url: https://cdn.postra.co.uk/status/canary.txt
   - name: Postra UK Landing
     url: https://postra.co.uk
 
