@@ -18,3 +18,8 @@ updates:
     groups:
       graphs:
         patterns: ["*"]
+  # The TruffleHog image secret-scan.yml runs (.github/tools).
+  - package-ecosystem: "docker"
+    directory: "/.github/tools"
+    schedule:
+      interval: "weekly"
