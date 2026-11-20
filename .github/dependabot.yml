@@ -10,16 +10,18 @@ updates:
     groups:
       actions:
         patterns: ["*"]
-  # The graph generator Graphs CI installs (.github/graphs, see graphs.yml).
+  # The graph generator Graphs CI installs (tools/graph-generator, see graphs.yml).
+  # Both folders are outside .github/: Dependabot cannot open a pull request
+  # that changes a file there other than a workflow.
   - package-ecosystem: "npm"
-    directory: "/.github/graphs"
+    directory: "/tools/graph-generator"
     schedule:
       interval: "weekly"
     groups:
       graphs:
         patterns: ["*"]
-  # The TruffleHog image secret-scan.yml runs (.github/tools).
+  # The TruffleHog image secret-scan.yml runs (tools/scanners).
   - package-ecosystem: "docker"
-    directory: "/.github/tools"
+    directory: "/tools/scanners"
     schedule:
       interval: "weekly"
