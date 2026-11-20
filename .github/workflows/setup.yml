@@ -81,7 +81,7 @@ jobs:
         if: steps.dispatch_graphs.outcome == 'failure'
         shell: bash
         run: |
-          cp .github/graphs/package.json .github/graphs/package-lock.json .
+          cp tools/graph-generator/package.json tools/graph-generator/package-lock.json .
           printf '/node_modules/\n/package.json\n/package-lock.json\n' >> .git/info/exclude
           npm ci --no-audit --no-fund
       - name: Generate graphs directly if dispatch fails
